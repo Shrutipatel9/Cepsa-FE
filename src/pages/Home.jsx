@@ -75,7 +75,7 @@ export default function Home({ onOpenInquiry }) {
       <div className="absolute top-[40%] right-[-10%] w-[600px] h-[600px] bg-[#D8A279]/8 rounded-md blur-3xl pointer-events-none animate-ambient-glow-2"></div>
 
       {/* 1. HERO — FULL SCREEN HEIGHT 3D RETRO GRID + CENTERED 3,800 PARTICLE LOGO */}
-      <section className="relative w-full h-screen min-h-[650px] overflow-hidden bg-[#080C10] select-none">
+      <section className="relative w-full h-screen min-h-[650px] overflow-hidden bg-[#F8F5F0] select-none">
         <div className="relative z-10 w-full h-full">
           <HeroScene className="w-full h-full block" />
         </div>
@@ -89,10 +89,10 @@ export default function Home({ onOpenInquiry }) {
           }}
           className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 cursor-pointer group"
         >
-          <span className="text-[11px] font-mono font-bold tracking-[0.25em] text-[#D8A279] uppercase opacity-80 group-hover:opacity-100 transition-opacity">
+          <span className="text-[11px] font-mono font-bold tracking-[0.25em] text-[#B17F59] uppercase opacity-90 group-hover:opacity-100 transition-opacity">
             Scroll to Explore
           </span>
-          <div className="w-8 h-8 rounded-full border border-[#D8A279]/40 bg-black/40 backdrop-blur-md flex items-center justify-center text-[#D8A279] animate-bounce shadow-lg group-hover:border-[#D8A279]">
+          <div className="w-8 h-8 rounded-full border border-[#B17F59]/30 bg-white/80 backdrop-blur-md flex items-center justify-center text-[#B17F59] animate-bounce shadow-md group-hover:border-[#B17F59]">
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>

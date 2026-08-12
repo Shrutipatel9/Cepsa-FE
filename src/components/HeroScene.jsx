@@ -166,51 +166,62 @@ export default function HeroScene({ style, className }) {
 
       const t = Math.min(elapsed / PHASE[phase], 1);
 
-      // ── 1. RENDER BACKGROUND & RETRO 3D GRID FLOOR (CEPSA BRAND COLOR)
-      ctx.fillStyle = '#080C10';
+      // ── 1. RENDER BACKGROUND & RETRO 3D GRID FLOOR (CEPSA LIGHT THEME)
+      ctx.fillStyle = '#F8F5F0';
       ctx.fillRect(0, 0, W, H);
 
       const horizonY = H * 0.48;
 
-      // Horizon Terracotta & Gold Ambient Glow
+      // Deeper Warm Horizon Ambient Glow
       const horizonGrad = ctx.createRadialGradient(W / 2, horizonY, 0, W / 2, horizonY, W * 0.65);
-      horizonGrad.addColorStop(0, 'rgba(216, 162, 121, 0.28)');
+      horizonGrad.addColorStop(0, 'rgba(216, 162, 121, 0.30)');
       horizonGrad.addColorStop(0.35, 'rgba(177, 127, 89, 0.14)');
-      horizonGrad.addColorStop(1, 'rgba(8, 12, 16, 0)');
+      horizonGrad.addColorStop(1, 'rgba(248, 245, 240, 0)');
       ctx.fillStyle = horizonGrad;
       ctx.fillRect(0, 0, W, H);
 
-      // Render 3D Perspective Grid Floor
+      // Render 3D Perspective Grid Floor (Darker & Crisper Grid Lines)
       ctx.save();
       ctx.beginPath();
 
       // Perspective Vertical Lines
-      const numVLines = 32;
+      const numVLines = 36;
       for (let i = -numVLines / 2; i <= numVLines / 2; i++) {
         const startX = W / 2 + i * (W * 0.01);
-        const endX = W / 2 + i * (W * 0.08);
+        const endX = W / 2 + i * (W * 0.085);
         ctx.moveTo(startX, horizonY);
         ctx.lineTo(endX, H);
       }
 
       // Animated Horizontal Perspective Lines
-      const numHLines = 18;
+      const numHLines = 20;
       for (let i = 0; i < numHLines; i++) {
-        const progress = ((i * 25 + gridOffset) % 250) / 250;
+        const progress = ((i * 22 + gridOffset) % 250) / 250;
         const lineY = horizonY + Math.pow(progress, 2.2) * (H - horizonY);
         ctx.moveTo(0, lineY);
         ctx.lineTo(W, lineY);
       }
 
-      ctx.strokeStyle = 'rgba(216, 162, 121, 0.35)'; // CEPSA Terracotta Grid Lines
-      ctx.lineWidth = 1.3;
+      ctx.strokeStyle = 'rgba(160, 105, 65, 0.38)'; // Soft, refined Terracotta Grid Lines
+      ctx.lineWidth = 1.35;
       ctx.stroke();
       ctx.restore();
+
+      // Automatic periodic center pulse during HOLD phase
+      if (phase === 'HOLD' && Math.floor(now / 1600) !== Math.floor((now - 16) / 1600)) {
+        shockwavesRef.current.push({
+          x: W / 2,
+          y: H * 0.45,
+          radius: 10,
+          maxRadius: Math.min(W, H) * 0.4,
+          alpha: 0.7,
+        });
+      }
 
       // ── 2. RENDER ACTIVE EXPANDING SHOCKWAVES ─────────────────────
       for (let i = shockwavesRef.current.length - 1; i >= 0; i--) {
         const sw = shockwavesRef.current[i];
-        sw.radius += (sw.maxRadius - sw.radius) * 0.08;
+        sw.radius += (sw.maxRadius - sw.radius) * 0.07;
         sw.alpha *= 0.92;
 
         if (sw.alpha <= 0.01) {
@@ -221,28 +232,34 @@ export default function HeroScene({ style, className }) {
         ctx.save();
         ctx.beginPath();
         ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(216, 162, 121, ${sw.alpha})`;
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = `rgba(152, 103, 67, ${sw.alpha * 0.75})`;
+        ctx.lineWidth = 2.2;
         ctx.stroke();
         ctx.restore();
       }
 
-      // ── 3. UPDATE & DRAW CENTERED LOGO PARTICLES (CEPSA PALETTE) ───
+      // ── 3. UPDATE & DRAW CENTERED LOGO PARTICLES (ORIGINAL COLORS + DYNAMIC ANIMATION) ───
       particles.forEach((p) => {
-        let alpha = 0.9;
+        let alpha = 0.95;
         let size = p.size;
 
         if (phase === 'FORMING') {
           const et = easeInOutCubic(t);
           p.x = p.sx + (p.tx - p.sx) * et;
           p.y = p.sy + (p.ty - p.sy) * et;
-          alpha = 0.35 + et * 0.65;
+          alpha = 0.4 + et * 0.6;
           size = p.size * (0.8 + et * 0.4);
         } else if (phase === 'HOLD') {
-          p.x = p.tx;
-          p.y = p.ty;
-          alpha = 0.92 + Math.sin(p.phase + now * 0.003) * 0.08;
-          size = p.size * (1.0 + Math.sin(p.phase + now * 0.004) * 0.08);
+          // Dynamic levitation wave + shimmer after logo forms
+          const waveX = Math.sin(p.tx * 0.01 + now * 0.003) * 3;
+          const waveY = Math.cos(p.ty * 0.012 + p.tx * 0.008 + now * 0.0035) * 4.5;
+          p.x = p.tx + waveX;
+          p.y = p.ty + waveY;
+
+          // Sparkle glints
+          const shimmer = Math.sin(p.phase + now * 0.005);
+          alpha = 0.9 + shimmer * 0.1;
+          size = p.size * (1.0 + shimmer * 0.25);
         } else if (phase === 'FREEING' || phase === 'FLOATING') {
           p.x += p.vx;
           p.y += p.vy;
@@ -257,7 +274,7 @@ export default function HeroScene({ style, className }) {
           p.x = Math.max(10, Math.min(W - 10, p.x));
           p.y = Math.max(10, Math.min(H - 10, p.y));
 
-          alpha = 0.45 + Math.sin(p.phase + now * 0.002) * 0.25;
+          alpha = 0.5 + Math.sin(p.phase + now * 0.002) * 0.25;
           size = p.size * 0.85;
         }
 
@@ -274,11 +291,11 @@ export default function HeroScene({ style, className }) {
           }
         }
 
-        // Render Glowing Particle Point
-        ctx.globalAlpha = Math.max(0.15, Math.min(1, alpha));
+        // Render Particle Point with Original Logo Color
+        ctx.globalAlpha = Math.max(0.2, Math.min(1, alpha));
         ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, Math.max(0.6, size), 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, Math.max(0.7, size), 0, Math.PI * 2);
         ctx.fill();
       });
 
@@ -331,18 +348,16 @@ function sampleLogo(img, targetCanvas) {
     for (let px = 0; px < offscreen.width; px += step) {
       const idx = (py * offscreen.width + px) * 4;
       const r = data[idx], g = data[idx + 1], b = data[idx + 2], a = data[idx + 3];
-      if (a < 80) continue;
+      if (a < 40) continue;
 
-      const isGold = r > 150 && g > 100 && b < 80 && r > g * 1.3;
-      const isDark = r < 100 && g < 100 && b < 100 && a > 120;
+      // Extract exact original color from logo pixel
+      const color = `rgb(${r}, ${g}, ${b})`;
 
-      if (isGold || isDark) {
-        hits.push({
-          x: logoX + px,
-          y: logoY + py,
-          isGold,
-        });
-      }
+      hits.push({
+        x: logoX + px,
+        y: logoY + py,
+        color,
+      });
     }
   }
 
@@ -356,7 +371,7 @@ function sampleText(targetCanvas) {
   offscreen.width = W;
   offscreen.height = H;
   const octx = offscreen.getContext('2d');
-  octx.fillStyle = '#000';
+  octx.fillStyle = '#1A1918';
   octx.font = `900 ${Math.round(H * 0.32)}px "Outfit", "Inter", sans-serif`;
   octx.textAlign = 'center';
   octx.textBaseline = 'middle';
@@ -367,7 +382,7 @@ function sampleText(targetCanvas) {
   for (let py = 0; py < H; py += step) {
     for (let px = 0; px < W; px += step) {
       const idx = (py * W + px) * 4;
-      if (data[idx + 3] > 80) hits.push({ x: px, y: py, isGold: false });
+      if (data[idx + 3] > 80) hits.push({ x: px, y: py, color: '#B17F59' });
     }
   }
   return downsample(hits, PARTICLE_COUNT);
@@ -392,8 +407,7 @@ function buildParticles(targets, canvas) {
     ty: t.y,
     x: Math.random() * W,
     y: Math.random() * H,
-    isGold: t.isGold,
-    color: t.isGold ? '#FBBF24' : BRAND_PALETTE[Math.floor(Math.random() * BRAND_PALETTE.length)],
+    color: t.color || '#B17F59',
     sx: Math.random() * W,
     sy: Math.random() * H,
     vx: (Math.random() - 0.5) * 2.0,
