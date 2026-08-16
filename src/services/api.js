@@ -22,4 +22,14 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Gallery API Endpoints
+export const getPublicGallery = () => api.get('/public/gallery');
+export const getAdminGallery = () => api.get('/admin/gallery');
+export const uploadGalleryMedia = (formData) =>
+  api.post('/admin/gallery/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+export const deleteGalleryItem = (id) => api.delete(`/admin/gallery/${id}`);
+
 export default api;
+

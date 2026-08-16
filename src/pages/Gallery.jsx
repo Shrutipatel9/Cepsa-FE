@@ -1,19 +1,10 @@
-import React, { useState, useRef } from 'react';
-import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Play, Pause, Volume2, VolumeX, Image as ImageIcon, Film, Sparkles } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
+import { getPublicGallery } from '../services/api';
 
-// Import Video Assets
-import video1 from '../assets/Gallery/Video1.mp4';
-import video2 from '../assets/Gallery/Video2.mp4';
-import video3 from '../assets/Gallery/Video3.mp4';
-
-// Import 6 Image Assets
-import image1 from '../assets/Gallery/Image1.jpg';
-import image2 from '../assets/Gallery/Image2.jpg';
-import image3 from '../assets/Gallery/Image3.jpg';
-import image4 from '../assets/Gallery/Image4.jpg';
-import image5 from '../assets/Gallery/Image5.jpg';
-import image6 from '../assets/Gallery/Image6.jpg';
+// Import Assets
+import galleryHeaderImg from '../assets/header_images/gallery.png';
 
 function GalleryItem({ item }) {
   const videoRef = useRef(null);
@@ -22,34 +13,34 @@ function GalleryItem({ item }) {
 
   const handleLoadedMetadata = () => {
     if (videoRef.current && !isPlaying) {
-      videoRef.current.currentTime = 2.5;
+      videoRef.current.currentTime = 1.0;
     }
   };
 
   const handleMouseLeave = () => {
-    if (item.type === 'video' && videoRef.current) {
+    if (item.item_type === 'video' && videoRef.current) {
       videoRef.current.pause();
-      videoRef.current.currentTime = 2.5;
+      videoRef.current.currentTime = 1.0;
       setIsPlaying(false);
     }
   };
 
   const handleMouseEnter = () => {
-    if (item.type === 'video' && videoRef.current) {
-      videoRef.current.play().catch(() => { });
+    if (item.item_type === 'video' && videoRef.current) {
+      videoRef.current.play().catch(() => {});
       setIsPlaying(true);
     }
   };
 
   const togglePlay = (e) => {
     e.stopPropagation();
-    if (item.type !== 'video' || !videoRef.current) return;
+    if (item.item_type !== 'video' || !videoRef.current) return;
     if (isPlaying) {
       videoRef.current.pause();
-      videoRef.current.currentTime = 2.5;
+      videoRef.current.currentTime = 1.0;
       setIsPlaying(false);
     } else {
-      videoRef.current.play().catch(() => { });
+      videoRef.current.play().catch(() => {});
       setIsPlaying(true);
     }
   };
@@ -62,7 +53,8 @@ function GalleryItem({ item }) {
     }
   };
 
-  const isVideo = item.type === 'video';
+  const isVideo = item.item_type === 'video';
+  const mediaUrl = item.file_url;
 
   return (
     <div
@@ -81,7 +73,7 @@ function GalleryItem({ item }) {
           <div className="relative w-full h-full overflow-hidden bg-slate-950">
             <video
               ref={videoRef}
-              src={`${item.src}#t=2.5`}
+              src={`${mediaUrl}#t=1.0`}
               preload="auto"
               onLoadedMetadata={handleLoadedMetadata}
               loop
@@ -115,10 +107,16 @@ function GalleryItem({ item }) {
         ) : (
           <div className="relative w-full h-full overflow-hidden">
             <img
-              src={item.src}
-              alt="CEPSA Gallery Showcase"
-              className="w-full h-full object-cover scale-[1.02]"
+              src={mediaUrl}
+              alt={item.title || "CEPSA Gallery Showcase"}
+              className="w-full h-full object-cover scale-[1.02] transition-transform duration-500 group-hover:scale-105"
             />
+          </div>
+        )}
+
+        {item.title && (
+          <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent text-white z-20 pointer-events-none">
+            <p className="text-xs font-semibold drop-shadow-md truncate">{item.title}</p>
           </div>
         )}
       </div>
@@ -127,40 +125,49 @@ function GalleryItem({ item }) {
 }
 
 export default function Gallery() {
-  // 3 Actual Videos & 6 Actual Images from assets/Gallery
-  const column1 = [
-    { id: 1, type: 'video', src: video1 },
-    { id: 2, type: 'photo', src: image1 },
-    { id: 3, type: 'photo', src: image2 },
-  ];
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const column2 = [
-    { id: 4, type: 'photo', src: image3 },
-    { id: 5, type: 'video', src: video2 },
-    { id: 6, type: 'photo', src: image4 },
-  ];
+  useEffect(() => {
+    fetchGallery();
+  }, []);
 
-  const column3 = [
-    { id: 7, type: 'photo', src: image5 },
-    { id: 8, type: 'video', src: video3 },
-    { id: 9, type: 'photo', src: image6 },
-  ];
+  const fetchGallery = async () => {
+    setLoading(true);
+    try {
+      const res = await getPublicGallery();
+      setItems(res.data || []);
+    } catch (err) {
+      console.error("Failed to load gallery items:", err);
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Distribute items into 3 columns dynamically
+  const col1 = [];
+  const col2 = [];
+  const col3 = [];
+  items.forEach((item, index) => {
+    if (index % 3 === 0) col1.push(item);
+    else if (index % 3 === 1) col2.push(item);
+    else col3.push(item);
+  });
 
   return (
     <div className="bg-[#F8F5F0] text-slate-900 selection:bg-[#B17F59] selection:text-white pb-24">
 
-      {/* 1. HERO HEADER BANNER (ELEGANT CLAY OVERLAY) */}
+      {/* 1. HERO HEADER BANNER */}
       <section className="relative w-full h-48 sm:h-56 bg-[#2B1D14] overflow-hidden border-b border-[#E5D7CD] mb-14">
-
-        {/* Background Architectural Craftsmanship Image */}
+        {/* Background Gallery Header Image */}
         <img
-          src={image1}
+          src={galleryHeaderImg}
           alt="CEPSA Gallery"
-          className="w-full h-full object-cover opacity-65 filter brightness-95"
+          className="w-full h-full object-cover opacity-65 filter brightness-95 transform scale-105"
         />
-
-        {/* Lighter Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#1C1613]/60 via-[#2B1D14]/40 to-[#1C1613]/60"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#B17F59]/20 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Center Title with Horizontal Accent Lines */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -181,10 +188,9 @@ export default function Gallery() {
             </div>
           </ScrollReveal>
         </div>
-
       </section>
 
-      {/* 2. MASONRY REELS & PHOTO SHOWCASE GRID */}
+      {/* 2. MEDIA SHOWCASE GRID */}
       <section className="max-w-[1400px] mx-auto px-3 sm:px-5 lg:px-6">
 
         {/* Section Header */}
@@ -199,40 +205,62 @@ export default function Gallery() {
           </div>
         </ScrollReveal>
 
-        {/* 3-Column Masonry Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
-
-          {/* Column 1 */}
-          <div className="space-y-6 sm:space-y-8">
-            {column1.map((item, idx) => (
-              <ScrollReveal key={item.id} variant="fade-up" delay={100 * (idx + 1)}>
-                <GalleryItem item={item} />
-              </ScrollReveal>
-            ))}
+        {/* Loading Spinner */}
+        {loading ? (
+          <div className="py-20 flex flex-col items-center justify-center space-y-3">
+            <div className="w-10 h-10 border-4 border-[#B17F59] border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-slate-500 text-xs font-semibold tracking-wider uppercase">Loading Gallery...</p>
           </div>
+        ) : items.length === 0 ? (
+          /* EMPTY STATE */
+          <ScrollReveal variant="fade-up" delay={200}>
+            <div className="max-w-md mx-auto py-16 px-6 text-center bg-white/80 backdrop-blur-md rounded-3xl border border-[#E5D7CD] shadow-lg space-y-4">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-[#F0E8E1] text-[#B17F59] flex items-center justify-center shadow-inner">
+                <Sparkles className="w-8 h-8" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-serif text-xl font-bold text-slate-900">No Gallery Media Yet</h3>
+                <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                  Photos and videos uploaded by Admin will appear here. Check back soon for our latest showcases!
+                </p>
+              </div>
+            </div>
+          </ScrollReveal>
+        ) : (
+          /* 3-COLUMN MASONRY GRID */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
+            {/* Column 1 */}
+            <div className="space-y-6 sm:space-y-8">
+              {col1.map((item, idx) => (
+                <ScrollReveal key={item.id} variant="fade-up" delay={100 * (idx + 1)}>
+                  <GalleryItem item={item} />
+                </ScrollReveal>
+              ))}
+            </div>
 
-          {/* Column 2 */}
-          <div className="space-y-6 sm:space-y-8">
-            {column2.map((item, idx) => (
-              <ScrollReveal key={item.id} variant="fade-up" delay={100 * (idx + 1)}>
-                <GalleryItem item={item} />
-              </ScrollReveal>
-            ))}
+            {/* Column 2 */}
+            <div className="space-y-6 sm:space-y-8">
+              {col2.map((item, idx) => (
+                <ScrollReveal key={item.id} variant="fade-up" delay={100 * (idx + 1)}>
+                  <GalleryItem item={item} />
+                </ScrollReveal>
+              ))}
+            </div>
+
+            {/* Column 3 */}
+            <div className="space-y-6 sm:space-y-8">
+              {col3.map((item, idx) => (
+                <ScrollReveal key={item.id} variant="fade-up" delay={100 * (idx + 1)}>
+                  <GalleryItem item={item} />
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
-
-          {/* Column 3 */}
-          <div className="space-y-6 sm:space-y-8">
-            {column3.map((item, idx) => (
-              <ScrollReveal key={item.id} variant="fade-up" delay={100 * (idx + 1)}>
-                <GalleryItem item={item} />
-              </ScrollReveal>
-            ))}
-          </div>
-
-        </div>
+        )}
 
       </section>
 
     </div>
   );
 }
+

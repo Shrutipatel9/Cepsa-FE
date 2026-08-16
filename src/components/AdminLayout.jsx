@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Layers, Inbox, LogOut, ExternalLink, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Layers, Inbox, LogOut, ExternalLink, ShieldCheck, Sparkles } from 'lucide-react';
 import Logo from './Logo';
 
 export default function AdminLayout({ children }) {
@@ -18,6 +18,7 @@ export default function AdminLayout({ children }) {
     { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
     { label: 'Manage Products', path: '/admin/products', icon: Layers },
     { label: 'Customer Inquires', path: '/admin/inquiries', icon: Inbox },
+    { label: 'Gallery Showcase', path: '/admin/gallery', icon: Sparkles },
   ];
 
   return (

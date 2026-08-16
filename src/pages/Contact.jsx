@@ -7,6 +7,9 @@ import PhoneCountryInput from '../components/PhoneCountryInput';
 import LocationInput from '../components/LocationInput';
 import { lookupCountryCode } from '../utils/countryCodes';
 
+// Import Header Assets
+import contactUsHeaderImg from '../assets/header_images/coontact_us.png';
+
 // Detect browser default country code based on timezone
 const getDefaultCountryCode = () => {
   try {
@@ -98,20 +101,39 @@ export default function Contact() {
   return (
     <div className="bg-[#F8F5F0] text-slate-900 min-h-screen">
 
-      {/* 1. HERO HEADER BANNER */}
-      <section className="relative bg-slate-950 text-white py-10 sm:py-12 overflow-hidden border-b border-[#E5D7CD]">
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 opacity-55"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-2.5">
-          <span className="px-3 py-0.5 bg-[#B17F59]/20 border border-[#B17F59]/40 text-[#D8A279] text-[11px] font-mono font-bold uppercase tracking-widest rounded-full inline-block">
-            CONNECT WITH CEPSA
-          </span>
-          <h1 className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Contact & Inquiry Desk
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
-            Reach out to our ceramic architectural consultants for export quotes, or industrial visits.
-          </p>
+      {/* 1. HERO HEADER BANNER (ELEGANT CLAY OVERLAY) */}
+      <section className="relative w-full h-48 sm:h-56 bg-[#2B1D14] overflow-hidden border-b border-[#E5D7CD] mb-10">
+
+        {/* Background Craftsmanship Image */}
+        <img
+          src={contactUsHeaderImg}
+          alt="CEPSA Contact Us"
+          className="w-full h-full object-cover opacity-65 filter brightness-95 transform scale-105"
+        />
+
+        {/* Lighter Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1C1613]/60 via-[#2B1D14]/40 to-[#1C1613]/60"></div>
+
+        {/* Center Title with Horizontal Accent Lines */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <ScrollReveal variant="fade-up" delay={100}>
+            <div className="flex items-center justify-center gap-4 sm:gap-8 text-white">
+              <div className="w-12 sm:w-24 lg:w-32 h-0.5 bg-gradient-to-r from-transparent to-[#D8A279]"></div>
+
+              <div className="text-center space-y-1">
+                <span className="text-[11px] font-mono font-bold text-[#D8A279] uppercase tracking-widest block">
+                  CONNECT WITH CEPSA
+                </span>
+                <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-wide drop-shadow-md text-amber-50">
+                  Contact Us
+                </h1>
+              </div>
+
+              <div className="w-12 sm:w-24 lg:w-32 h-0.5 bg-gradient-to-l from-transparent to-[#D8A279]"></div>
+            </div>
+          </ScrollReveal>
         </div>
+
       </section>
 
       {/* 2. MAIN CONTENT CONTAINER */}

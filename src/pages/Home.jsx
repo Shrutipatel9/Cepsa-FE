@@ -4,6 +4,15 @@ import { ArrowRight, ShieldCheck, Sparkles, Award, Crown, ArrowUpRight, ChevronD
 import ScrollReveal from '../components/ScrollReveal';
 import HeroScene from '../components/HeroScene';
 
+// Import 4 Choose Us Assets
+import chooseUsImg1 from '../assets/choose_us/choose_us_photo_1.png';
+import chooseUsImg2 from '../assets/choose_us/choose_us_photo_2.png';
+import chooseUsImg3 from '../assets/choose_us/choose_us_photo_3.png';
+import chooseUsImg4 from '../assets/choose_us/choose_us_photo_4.png';
+
+// Import About Us Story Image
+import aboutUsImg from '../assets/about_us_image.png';
+
 
 export default function Home({ onOpenInquiry }) {
   // Interactive "Why Choose Us" Feature Selector State
@@ -40,28 +49,28 @@ export default function Home({ onOpenInquiry }) {
       title: "Unmatched Quality",
       subtitle: "CEPSA",
       description: "Every CEPSA product is crafted using premium ceramic materials and advanced manufacturing technology to ensure exceptional durability, flawless finishes, and long-lasting performance.",
-      image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1000&q=80"
+      image: chooseUsImg1
     },
     {
       id: 1,
       title: "Innovative Designs",
       subtitle: "ITALIAN SPECIFICATION",
       description: "Our collections blend contemporary aesthetics with practical functionality, creating elegant bathroom spaces that complement every lifestyle and architectural vision.",
-      image: "https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=1000&q=80"
+      image: chooseUsImg2
     },
     {
       id: 2,
       title: "Exceptional Durability",
       subtitle: "1250°C KILN FIRED",
       description: "Manufactured under strict quality standards and high-temperature vitrification, our products offer superior strength, stain resistance, and reliable performance for years to come.",
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80"
+      image: chooseUsImg3
     },
     {
       id: 3,
       title: "Premium Collection",
       subtitle: "SANITARYWARE & SLABS",
       description: "From modern basins and one-piece closets to wall-hung solutions and designer accessories, CEPSA offers a comprehensive range crafted to elevate every bathroom experience.",
-      image: "https://images.unsplash.com/photo-1604014237800-1c9102c219da?auto=format&fit=crop&w=1000&q=80"
+      image: chooseUsImg4
     }
   ];
 
@@ -201,8 +210,8 @@ export default function Home({ onOpenInquiry }) {
               <ScrollReveal variant="fade-left" delay={200}>
                 <div className="relative pt-2 pb-6 lg:pb-8">
 
-                  {/* Showcase Image Container */}
-                  <div className="relative rounded-2xl overflow-hidden shadow-xl border border-[#E5D7CD] aspect-4/3 sm:aspect-16/10 ml-0 lg:ml-8 group">
+                  {/* Showcase Image Container (Fixed Size Container) */}
+                  <div className="relative rounded-2xl overflow-hidden shadow-xl border border-[#E5D7CD] w-full h-[400px] sm:h-[460px] ml-0 lg:ml-6 group bg-slate-100 flex items-center justify-center">
                     <img
                       key={activeFeature.id}
                       src={activeFeature.image}
@@ -212,20 +221,20 @@ export default function Home({ onOpenInquiry }) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
                   </div>
 
-                  {/* Overlapping Light Theme Ceramic Card */}
-                  <div className="relative lg:absolute lg:-bottom-4 lg:-left-4 xl:-left-6 w-full lg:w-[350px] bg-white/95 backdrop-blur-md text-slate-900 p-6 sm:p-7 rounded-2xl shadow-2xl border border-[#E5D7CD] z-30 mt-4 lg:mt-0 animate-fadeIn hover-shine group/card">
+                  {/* Overlapping Light Theme CEPSA Card (Sleek Compact Size for Better Image Visibility) */}
+                  <div className="relative lg:absolute lg:-bottom-3 lg:-left-2 xl:-left-4 w-full lg:w-[280px] bg-white/95 backdrop-blur-md text-slate-900 p-4 sm:p-5 rounded-2xl shadow-2xl border border-[#E5D7CD] z-30 mt-4 lg:mt-0 animate-fadeIn hover-shine group/card">
 
                     {/* Official CEPSA Logo Header */}
-                    <div className="pb-3 mb-3.5 flex items-center justify-between">
+                    <div className="pb-2 mb-2.5 flex items-center justify-between border-b border-slate-100">
                       <img
                         src="/cepsa-logo.png"
                         alt="CEPSA"
-                        className="h-8 sm:h-9 object-contain"
+                        className="h-6 sm:h-7 object-contain"
                       />
                     </div>
 
                     {/* Active Feature Description */}
-                    <p className="text-slate-600 text-xs font-medium leading-relaxed mb-5 transition-opacity duration-500">
+                    <p className="text-slate-600 text-[11px] font-medium leading-relaxed mb-3.5 line-clamp-3">
                       {activeFeature.description}
                     </p>
 
@@ -233,9 +242,9 @@ export default function Home({ onOpenInquiry }) {
                     <div>
                       <Link
                         to="/about"
-                        className="inline-flex items-center gap-2 text-xs font-bold text-white transition-all duration-300 group/btn uppercase tracking-wider bg-[#B17F59] hover:bg-[#986743] px-5 py-2.5 rounded-md shadow-md hover-shine"
+                        className="inline-flex items-center gap-1.5 text-[11px] font-bold text-white transition-all duration-300 group/btn uppercase tracking-wider bg-[#B17F59] hover:bg-[#986743] px-3.5 py-1.5 rounded-md shadow-xs hover-shine"
                       >
-                        Read More <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover/btn:translate-x-1.5" />
+                        Read More <ArrowRight className="w-3 h-3 transition-transform duration-300 group-hover/btn:translate-x-1" />
                       </Link>
                     </div>
 
@@ -270,22 +279,22 @@ export default function Home({ onOpenInquiry }) {
                   {/* Image Frame Container */}
                   <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E5D7CD] group hover-shine bg-slate-100 aspect-4/3 sm:aspect-16/11">
                     <img
-                      src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
+                      src={aboutUsImg}
                       alt="CEPSA Story and Vision"
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 filter brightness-95"
                     />
                     <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-transparent"></div>
                   </div>
 
-                  {/* Floating Circular Terracotta Badge Button (About Us ↗) Positioned HALF OUT at Bottom-Right Corner */}
+                  {/* Floating Circular Terracotta Badge Button (About Us ↗) Positioned at Bottom-Right Corner */}
                   <Link
                     to="/about"
-                    className="absolute -bottom-2 -right-2 sm:-bottom-6 sm:-right-4 w-28 h-28 sm:w-36 sm:h-36 rounded-md bg-[#B17F59] hover:bg-[#986743] text-white flex flex-col items-center justify-center font-serif font-bold text-xs sm:text-sm tracking-wide shadow-2xl transition-all duration-500 transform hover:scale-110 animate-float-slow group/badge border-4 border-[#F8F5F0] z-40"
+                    className="absolute -bottom-3 -right-3 sm:-bottom-4 sm:-right-4 w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[#B17F59] hover:bg-[#986743] text-white flex flex-col items-center justify-center font-serif font-bold text-xs tracking-wide shadow-2xl transition-all duration-500 transform hover:scale-110 animate-float-slow group/badge border-4 border-[#F8F5F0] z-40"
                     title="Learn More About CEPSA"
                   >
                     <div className="flex items-center gap-1 group-hover/badge:translate-x-0.5 group-hover/badge:-translate-y-0.5 transition-transform duration-300">
                       <span>About Us</span>
-                      <ArrowUpRight className="w-4 h-4 text-white" />
+                      <ArrowUpRight className="w-3.5 h-3.5 text-white" />
                     </div>
                   </Link>
 

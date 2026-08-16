@@ -3,6 +3,9 @@ import { Download, MessageSquare, CheckCircle2 } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
 import eCatalogueImage from '../assets/e-catalogue-image.png';
 
+// Import Header Assets
+import eCatalogueHeaderImg from '../assets/header_images/e-catelogue.png';
+
 export default function ECatalogue({ onOpenInquiry }) {
   const [isBookHovered, setIsBookHovered] = useState(false);
 
@@ -17,7 +20,7 @@ export default function ECatalogue({ onOpenInquiry }) {
 
         {/* Background Craftsmanship Image */}
         <img
-          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=80"
+          src={eCatalogueHeaderImg}
           alt="CEPSA E-Catalogue"
           className="w-full h-full object-cover opacity-65 filter brightness-95 transform scale-105"
         />

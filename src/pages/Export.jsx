@@ -2,6 +2,10 @@ import React from 'react';
 import { Globe, PackageCheck, Anchor, ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
 
+// Import Assets
+import exportHeaderImg from '../assets/header_images/export.png';
+import exportImg from '../assets/export.png';
+
 export default function Export() {
   const regions = [
     { name: "African Continent", countries: "Delivering durable and stylish sanitaryware solutions across South Africa, Kenya, Nigeria, Egypt, Morocco, Ghana, and neighboring countries." },
@@ -17,7 +21,7 @@ export default function Export() {
 
         {/* Cargo Port Shipping Background Image */}
         <img
-          src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1800&q=80"
+          src={exportHeaderImg}
           alt="CEPSA Global Export"
           className="w-full h-full object-cover opacity-65 filter brightness-95"
         />
@@ -60,8 +64,8 @@ export default function Export() {
             <ScrollReveal variant="fade-right" delay={200}>
               <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E5D7CD] group hover-shine bg-[#F0E8E1] aspect-4/3 max-h-[340px] max-w-md mx-auto">
                 <img
-                  src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80"
-                  alt="CEPSA Cargo Shipping Container Vessel"
+                  src={exportImg}
+                  alt="CEPSA Global Export Shipping"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 filter brightness-95"
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-transparent"></div>

@@ -20,6 +20,8 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminProducts from './pages/AdminProducts';
 import AdminInquiries from './pages/AdminInquiries';
+import AdminGallery from './components/AdminGallery';
+import AdminLayout from './components/AdminLayout';
 
 // Global Scroll To Top on Route/Search Parameter Changes
 function ScrollToTop() {
@@ -117,6 +119,16 @@ function AppContent() {
             element={
               <ProtectedAdminRoute>
                 <AdminInquiries />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/gallery"
+            element={
+              <ProtectedAdminRoute>
+                <AdminLayout>
+                  <AdminGallery />
+                </AdminLayout>
               </ProtectedAdminRoute>
             }
           />

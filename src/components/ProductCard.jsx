@@ -1,7 +1,11 @@
-import React from 'react';
-import { Send, CheckCircle2 } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, CheckCircle2, ChevronDown, X, Info } from 'lucide-react';
 
 export default function ProductCard({ product, onInquire }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipRef = useRef(null);
+  const buttonRef = useRef(null);
+
   const primaryImage =
     product.images?.find((img) => img.is_primary)?.image_url ||
     product.images?.[0]?.image_url ||
@@ -11,6 +15,31 @@ export default function ProductCard({ product, onInquire }) {
   const specList = Array.isArray(product.specifications) && product.specifications.length > 0
     ? product.specifications
     : (product.description ? [product.description] : []);
+
+  const visibleSpecs = specList.slice(0, 3);
+  const remainingSpecs = specList.slice(3);
+  const hasMore = remainingSpecs.length > 0;
+
+  // Close tooltip on click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        tooltipRef.current &&
+        !tooltipRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setShowTooltip(false);
+      }
+    };
+
+    if (showTooltip) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showTooltip]);
 
   return (
     <div className="group relative bg-white border border-[#E5D7CD] hover:border-[#B17F59] rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-md hover:shadow-2xl flex flex-col justify-between hover-shine transform-gpu h-full">
@@ -28,7 +57,7 @@ export default function ProductCard({ product, onInquire }) {
       </div>
 
       {/* 2. PRODUCT DETAILS */}
-      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4 bg-white">
+      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4 bg-white relative">
         
         <div className="space-y-3">
           
@@ -39,18 +68,71 @@ export default function ProductCard({ product, onInquire }) {
             </h3>
           </div>
 
-          {/* Specifications List Below Title (Fixed Minimum Height) */}
-          <div className="space-y-1.5 pt-2 border-t border-[#E5D7CD]/60 min-h-[85px]">
-            {specList.length > 0 ? (
-              specList.slice(0, 4).map((spec, idx) => (
-                <div key={idx} className="flex items-center gap-2 text-xs font-medium text-slate-700">
-                  <CheckCircle2 className="w-4 h-4 text-[#B17F59] shrink-0" />
-                  <span className="line-clamp-1">{spec}</span>
-                </div>
-              ))
+          {/* Specifications List Below Title (3 Points + View More Tooltip) */}
+          <div className="space-y-1.5 pt-2 border-t border-[#E5D7CD]/60 min-h-[95px] relative">
+            {visibleSpecs.length > 0 ? (
+              <>
+                {visibleSpecs.map((spec, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-xs font-medium text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-[#B17F59] shrink-0" />
+                    <span className="line-clamp-1">{spec}</span>
+                  </div>
+                ))}
+
+                {/* VIEW MORE SMALL BUTTON */}
+                {hasMore && (
+                  <div className="pt-1">
+                    <button
+                      ref={buttonRef}
+                      type="button"
+                      onClick={() => setShowTooltip(!showTooltip)}
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-[#B17F59] hover:text-[#986743] bg-[#F0E8E1] hover:bg-[#E5D7CD] px-2.5 py-0.5 rounded-md transition-all cursor-pointer shadow-2xs"
+                      title="Click to view remaining specifications"
+                    >
+                      <span>View More</span>
+                      <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${showTooltip ? 'rotate-180' : ''}`} />
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="text-xs text-slate-400 font-medium italic pt-1">
                 Standard sanitaryware specification
+              </div>
+            )}
+
+            {/* FLOATING TOOLTIP / POPOVER ON CLICK */}
+            {showTooltip && (
+              <div
+                ref={tooltipRef}
+                className="absolute z-40 bottom-full left-0 mb-2 w-full max-w-[280px] sm:max-w-xs bg-slate-900 text-white p-4 rounded-2xl shadow-2xl border border-slate-700/80 animate-fadeIn"
+              >
+                {/* Tooltip Header */}
+                <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-700">
+                  <div className="flex items-center gap-1.5 font-serif font-bold text-xs text-[#D8A279]">
+                    <Info className="w-3.5 h-3.5" />
+                    <span>Additional Details</span>
+                  </div>
+                  <button
+                    onClick={() => setShowTooltip(false)}
+                    className="p-1 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Tooltip Spec List */}
+                <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar text-[11px] leading-relaxed">
+                  {remainingSpecs.map((spec, idx) => (
+                    <div key={idx} className="flex items-start gap-2 text-slate-200">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#D8A279] shrink-0 mt-0.5" />
+                      <span>{spec}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Tooltip Arrow Tip */}
+                <div className="absolute top-full left-6 -mt-1 border-8 border-transparent border-t-slate-900"></div>
               </div>
             )}
           </div>

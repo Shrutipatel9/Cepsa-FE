@@ -2,6 +2,40 @@ import React, { useState } from 'react';
 import { Target, Eye, Diamond, Plus, Minus, ShieldCheck, Sparkles, Award, CheckCircle2, ArrowRight } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
 
+// Import Assets
+import companyProfileImg from '../assets/company_profile.png';
+import companyProfileImg2 from '../assets/company_profile_2.png';
+import aboutUsHeaderImg from '../assets/header_images/about_us.png';
+
+// Custom Line-Art SVG Icons matching reference image
+const RibbonMedalIcon = ({ className = "w-10 h-10" }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="24" cy="19" r="13" />
+    <circle cx="24" cy="19" r="9" />
+    <path d="M17 30L13 44L21 40L24 44" />
+    <path d="M31 30L35 44L27 40L24 44" />
+  </svg>
+);
+
+const ShieldCheckmarkIcon = ({ className = "w-10 h-10" }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M24 6L10 12V23C10 32.5 16 40 24 43C32 40 38 32.5 38 23V12L24 6Z" />
+    <path d="M17 23L22 28L31 18" strokeWidth="2.6" />
+    <path d="M11 27C11 27 13.5 30 16 29" />
+    <path d="M37 27C37 27 34.5 30 32 29" />
+  </svg>
+);
+
+const FacetedDiamondIcon = ({ className = "w-10 h-10" }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 10L34 10L43 21L24 41L5 21L14 10Z" />
+    <path d="M14 10L24 41L34 10" />
+    <path d="M5 21L43 21" />
+    <path d="M14 10L20 21L34 10" />
+    <path d="M20 21L24 41L28 21" />
+  </svg>
+);
+
 export default function About() {
   const [activeAccordion, setActiveAccordion] = useState(0);
 
@@ -32,7 +66,7 @@ export default function About() {
 
         {/* Background Craftsmanship Image */}
         <img
-          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1800&q=80"
+          src={aboutUsHeaderImg}
           alt="About CEPSA"
           className="w-full h-full object-cover opacity-65 filter brightness-95 transform scale-105"
         />
@@ -71,8 +105,8 @@ export default function About() {
             <ScrollReveal variant="fade-right" delay={150}>
               <div className="relative w-full rounded-3xl overflow-hidden shadow-xl border border-[#E5D7CD] aspect-4/3 max-h-[340px] max-w-md mx-auto group hover-shine bg-white">
                 <img
-                  src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80"
-                  alt="CEPSA Luxury Bathroom Fixtures"
+                  src={companyProfileImg}
+                  alt="CEPSA Company Profile Showcase"
                   className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105 filter brightness-95"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
@@ -101,37 +135,52 @@ export default function About() {
               </p>
             </ScrollReveal>
 
-            {/* Stat Counters Below Text */}
+            {/* Stat Counters Below Text - Styled Exactly as Requested */}
             <ScrollReveal variant="fade-up" delay={350}>
-              <div className="pt-5 border-t border-[#E5D7CD] grid grid-cols-3 gap-3 sm:gap-4 text-left">
+              <div className="pt-6 border-t border-[#E5D7CD] grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 text-left">
 
-                {/* 1. HIGHLIGHTED 7+ YEARS EXPERIENCE BOX */}
-                <div className="space-y-1 border-l-2 border-[#B17F59] pl-3 bg-[#F0E8E1] p-3 rounded-2xl shadow-xs transition-transform duration-300 hover:-translate-y-1">
-                  <div className="font-serif text-2xl sm:text-3xl font-extrabold text-[#B17F59]">
-                    12 +
+                {/* 1. YEARS OF EXCELLENCE */}
+                <div className="bg-[#F2EAE1] border border-[#E3D4C4] border-l-2 border-l-[#B17F59] p-3.5 sm:p-4 rounded-2xl shadow-2xs hover:shadow-md transition-all duration-300 flex items-center gap-3.5 sm:gap-4 hover:-translate-y-1 group">
+                  <div className="shrink-0 text-[#B17F59] group-hover:scale-110 transition-transform duration-300">
+                    <RibbonMedalIcon className="w-10 h-10 sm:w-11 sm:h-11" />
                   </div>
-                  <div className="text-[10px] sm:text-[11px] font-bold text-slate-900 uppercase tracking-wider leading-tight">
-                    Years of Excellence
+                  <div className="space-y-0.5">
+                    <div className="font-serif text-2xl sm:text-3xl font-extrabold text-[#B17F59]">
+                      12 +
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-bold text-slate-900 uppercase tracking-wider leading-tight">
+                      Years of Excellence
+                    </div>
                   </div>
                 </div>
 
-                {/* 2. 100% EXCELLENCE & QUALITY */}
-                <div className="space-y-1 border-l-2 border-[#B17F59] pl-3 bg-[#F0E8E1] p-3 rounded-2xl shadow-xs transition-transform duration-300 hover:-translate-y-1">
-                  <div className="font-serif text-2xl sm:text-3xl font-extrabold text-[#B17F59]">
-                    100 %
+                {/* 2. QUALITY ASSURED */}
+                <div className="bg-[#F2EAE1] border border-[#E3D4C4] border-l-2 border-l-[#B17F59] p-3.5 sm:p-4 rounded-2xl shadow-2xs hover:shadow-md transition-all duration-300 flex items-center gap-3.5 sm:gap-4 hover:-translate-y-1 group">
+                  <div className="shrink-0 text-[#B17F59] group-hover:scale-110 transition-transform duration-300">
+                    <ShieldCheckmarkIcon className="w-10 h-10 sm:w-11 sm:h-11" />
                   </div>
-                  <div className="text-[10px] sm:text-[11px] font-bold text-slate-900 uppercase tracking-wider leading-tight">
-                    Quality Assured
+                  <div className="space-y-0.5">
+                    <div className="font-serif text-2xl sm:text-3xl font-extrabold text-[#B17F59]">
+                      100 %
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-bold text-slate-900 uppercase tracking-wider leading-tight">
+                      Quality Assured
+                    </div>
                   </div>
                 </div>
 
-                {/* 3. 100+ PREMIUM COLLECTIONS */}
-                <div className="space-y-1 border-l-2 border-[#B17F59] pl-3 bg-[#F0E8E1] p-3 rounded-2xl shadow-xs transition-transform duration-300 hover:-translate-y-1">
-                  <div className="font-serif text-2xl sm:text-3xl font-extrabold text-[#B17F59]">
-                    100 +
+                {/* 3. PREMIUM COLLECTIONS */}
+                <div className="bg-[#F2EAE1] border border-[#E3D4C4] border-l-2 border-l-[#B17F59] p-3.5 sm:p-4 rounded-2xl shadow-2xs hover:shadow-md transition-all duration-300 flex items-center gap-3.5 sm:gap-4 hover:-translate-y-1 group">
+                  <div className="shrink-0 text-[#B17F59] group-hover:scale-110 transition-transform duration-300">
+                    <FacetedDiamondIcon className="w-10 h-10 sm:w-11 sm:h-11" />
                   </div>
-                  <div className="text-[10px] sm:text-[11px] font-bold text-slate-900 uppercase tracking-wider leading-tight">
-                    Premium Collections
+                  <div className="space-y-0.5">
+                    <div className="font-serif text-2xl sm:text-3xl font-extrabold text-[#B17F59]">
+                      100 +
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-bold text-slate-900 uppercase tracking-wider leading-tight">
+                      Premium Collections
+                    </div>
                   </div>
                 </div>
 
@@ -214,8 +263,8 @@ export default function About() {
               <ScrollReveal variant="fade-left" delay={200}>
                 <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E5D7CD] aspect-4/3 max-h-[340px] max-w-md mx-auto group hover-shine bg-white">
                   <img
-                    src="https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=1000&q=80"
-                    alt="CEPSA Architectural Craftsmanship"
+                    src={companyProfileImg2}
+                    alt="Why Choose CEPSA Sanitaryware"
                     className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105 filter brightness-95"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
