@@ -114,11 +114,7 @@ function GalleryItem({ item }) {
           </div>
         )}
 
-        {item.title && (
-          <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent text-white z-20 pointer-events-none">
-            <p className="text-xs font-semibold drop-shadow-md truncate">{item.title}</p>
-          </div>
-        )}
+        {/* CLEAN MEDIA PRESENTATION WITH NO BOTTOM TEXT OVERLAY */}
       </div>
     </div>
   );

@@ -254,6 +254,7 @@ export default function AdminProducts() {
 
     const data = new FormData();
     data.append('file', file);
+    data.append('kind', isCategory ? 'category' : 'product');
 
     const existingUrl = isCategory ? catForm.image_url : productForm.image_url;
     if (existingUrl) {
@@ -273,7 +274,7 @@ export default function AdminProducts() {
       }
       showSuccess('Photo uploaded successfully!');
     } catch (err) {
-      showError('Failed to upload image.');
+      showError(err.response?.data?.detail || 'Failed to upload image.');
     } finally {
       setUploadingImage(false);
     }
