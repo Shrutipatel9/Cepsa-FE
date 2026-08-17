@@ -30,6 +30,7 @@ export const uploadGalleryMedia = (formData) =>
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 export const deleteGalleryItem = (id) => api.delete(`/admin/gallery/${id}`);
+export const reorderGalleryItems = (items) => api.put('/admin/gallery/reorder', { items });
 
 export default api;
 

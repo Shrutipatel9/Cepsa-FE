@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Upload, Plus, Trash2, Image as ImageIcon, Film, X, Check,
-  AlertCircle, Sparkles, RefreshCw, Eye
+  AlertCircle, Sparkles, RefreshCw, Eye, GripVertical, Save, Move, Info
 } from 'lucide-react';
-import { getAdminGallery, uploadGalleryMedia, deleteGalleryItem } from '../services/api';
+import { getAdminGallery, uploadGalleryMedia, deleteGalleryItem, reorderGalleryItems } from '../services/api';
 
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
 const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime', 'video/x-msvideo'];
@@ -12,7 +12,12 @@ export default function AdminGallery() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  
+
+  // Reorder state
+  const [draggedIdx, setDraggedIdx] = useState(null);
+  const [isOrderChanged, setIsOrderChanged] = useState(false);
+  const [savingOrder, setSavingOrder] = useState(false);
+
   // Upload form state
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
@@ -38,10 +43,56 @@ export default function AdminGallery() {
     try {
       const res = await getAdminGallery();
       setItems(res.data || []);
+      setIsOrderChanged(false);
     } catch (err) {
       console.error('Error fetching gallery:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // --- DRAG AND DROP REORDER HANDLERS ---
+  const handleDragStart = (e, index) => {
+    setDraggedIdx(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    if (draggedIdx === null || draggedIdx === index) return;
+
+    const newItems = [...items];
+    const draggedItem = newItems[draggedIdx];
+    newItems.splice(draggedIdx, 1);
+    newItems.splice(index, 0, draggedItem);
+
+    setItems(newItems);
+    setDraggedIdx(index);
+    setIsOrderChanged(true);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIdx(null);
+  };
+
+  const handleSaveOrder = async () => {
+    setSavingOrder(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+    try {
+      const payload = items.map((item, index) => ({
+        id: item.id,
+        display_order: index,
+      }));
+      await reorderGalleryItems(payload);
+      setIsOrderChanged(false);
+      setSuccessMsg('Gallery order saved! Changes are now live on the website.');
+      setTimeout(() => setSuccessMsg(''), 4000);
+    } catch (err) {
+      console.error('Failed to save order:', err);
+      setErrorMsg('Failed to save reorder sequence. Please try again.');
+    } finally {
+      setSavingOrder(false);
     }
   };
 
@@ -105,7 +156,7 @@ export default function AdminGallery() {
 
       await uploadGalleryMedia(formData);
       setSuccessMsg('Media uploaded successfully to Supabase Storage!');
-      
+
       setTimeout(() => {
         closeUploadModal();
         fetchGallery();
@@ -198,7 +249,7 @@ export default function AdminGallery() {
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-          <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+          <div className="p-3 bg-[#F0E8E1] text-[#B17F59] rounded-xl">
             <ImageIcon className="w-5 h-5" />
           </div>
           <div>
@@ -208,7 +259,7 @@ export default function AdminGallery() {
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-          <div className="p-3 bg-amber-50 text-amber-600 rounded-xl">
+          <div className="p-3 bg-[#F0E8E1] text-[#8E5832] rounded-xl">
             <Film className="w-5 h-5" />
           </div>
           <div>
@@ -218,7 +269,7 @@ export default function AdminGallery() {
         </div>
       </div>
 
-      {/* GALLERY ITEMS GRID */}
+      {/* GALLERY ITEMS GRID (WITH DRAG & DROP REORDERING) */}
       {loading ? (
         <div className="py-20 flex flex-col items-center justify-center space-y-3">
           <div className="w-10 h-10 border-4 border-[#B17F59] border-t-transparent rounded-full animate-spin"></div>
@@ -248,14 +299,22 @@ export default function AdminGallery() {
             const isVideo = item.item_type === 'video';
             const defaultName = `Media ${idx + 1}`;
             const displayName = item.title || defaultName;
+            const isBeingDragged = draggedIdx === idx;
 
             return (
               <div
                 key={item.id}
-                className="group relative bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col"
+                draggable
+                onDragStart={(e) => handleDragStart(e, idx)}
+                onDragOver={(e) => handleDragOver(e, idx)}
+                onDragEnd={handleDragEnd}
+                className={`group relative bg-white rounded-2xl border transition-all duration-300 flex flex-col cursor-grab active:cursor-grabbing ${isBeingDragged
+                  ? 'opacity-40 border-dashed border-[#B17F59] scale-95 shadow-2xl'
+                  : 'border-slate-200/90 shadow-xs hover:shadow-xl hover:border-[#B17F59]/80'
+                  }`}
               >
                 {/* MEDIA THUMBNAIL (UNIFORM SAME SIZE CONTAINER) */}
-                <div className="relative w-full aspect-square bg-slate-950 overflow-hidden">
+                <div className="relative w-full aspect-square bg-slate-950 overflow-hidden select-none">
                   {isVideo ? (
                     <video
                       src={`${item.file_url}#t=1.0`}
@@ -267,21 +326,22 @@ export default function AdminGallery() {
                     <img
                       src={item.file_url}
                       alt={displayName}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none"
                     />
                   )}
 
-                  {/* MEDIA TYPE BADGE */}
-                  <span className={`absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md shadow-sm ${
-                    isVideo ? 'bg-amber-500/90 text-white' : 'bg-blue-600/90 text-white'
-                  }`}>
-                    {isVideo ? '📹 Video' : '🖼️ Photo'}
-                  </span>
+                  {/* DRAG GRIP HANDLE BADGE */}
+                  <div
+                    className="absolute top-3 left-3 z-20 p-1.5 rounded-lg bg-slate-950/80 text-slate-200 backdrop-blur-md shadow-md hover:bg-[#B17F59] transition-colors flex items-center justify-center"
+                    title="Drag & drop to reorder"
+                  >
+                    <GripVertical className="w-4 h-4 text-slate-300" />
+                  </div>
 
                   {/* DELETE OVERLAY BUTTON */}
                   <button
                     onClick={() => handleDeleteClick(item.id)}
-                    className="absolute top-3 right-3 z-10 p-2 rounded-full bg-rose-600/90 hover:bg-rose-700 text-white shadow-md transition-transform hover:scale-110 cursor-pointer"
+                    className="absolute top-3 right-3 z-20 p-2 rounded-full bg-rose-600/90 hover:bg-rose-700 text-white shadow-md transition-transform hover:scale-110 cursor-pointer"
                     title="Delete item"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -289,19 +349,59 @@ export default function AdminGallery() {
                 </div>
 
                 {/* CARD DETAILS */}
-                <div className="p-4 space-y-1 bg-white flex-1 flex flex-col justify-between">
+                <div className="p-4 space-y-1 bg-white flex-1 flex flex-col justify-between select-none">
                   <h4 className="font-serif font-bold text-slate-900 text-sm truncate">
                     {displayName}
                   </h4>
-                  <p className="text-[11px] text-slate-400 font-medium">
-                    {new Date(item.created_at).toLocaleDateString(undefined, {
-                      year: 'numeric', month: 'short', day: 'numeric'
-                    })}
-                  </p>
+                  <div className="text-[11px] text-slate-400 font-medium pt-1">
+                    <span>
+                      {new Date(item.created_at).toLocaleDateString(undefined, {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                      })}
+                    </span>
+                  </div>
                 </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* BOTTOM FLOATING SAVE ORDER ACTION BAR WITH INFO TOOLTIP (PROPER THEME) */}
+      {isOrderChanged && (
+        <div className="fixed bottom-6 right-6 z-40 animate-slideUp">
+          <div className="text-white p-3.5 sm:px-5 sm:py-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
+
+            {/* Save Order Button (Brand Terracotta Theme) */}
+            <button
+              onClick={handleSaveOrder}
+              disabled={savingOrder}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#B17F59] hover:bg-[#986743] disabled:opacity-50 text-white text-xs font-bold shadow-md transition-all cursor-pointer hover-shine"
+            >
+              <Save className="w-4 h-4" />
+              <span>{savingOrder ? 'Saving Order...' : 'Save Order'}</span>
+            </button>
+
+            {/* Info Icon with Hover Tooltip */}
+            <div className="relative group/tooltip">
+              <button
+                type="button"
+                className="p-2.5 rounded-xl bg-[#2B1D14] hover:bg-[#B17F59] text-[#D8A279] hover:text-white transition-colors cursor-help flex items-center justify-center border border-[#B17F59]/30"
+              >
+                <Info className="w-4 h-4" />
+              </button>
+
+              {/* Hover Tooltip */}
+              <div className="absolute bottom-full right-0 mb-3 w-64 p-3 bg-[#1C1613] text-slate-200 text-[11px] leading-relaxed font-medium rounded-xl shadow-2xl border border-[#B17F59]/40 opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+                <p>
+                  Drag & drop media cards to rearrange their order, then click <strong className="text-[#D8A279]">Save Order</strong> to update the live website gallery sequence.
+                </p>
+                {/* Tooltip Arrow */}
+                <div className="absolute top-full right-3.5 -mt-1 border-6 border-transparent border-t-[#1C1613]"></div>
+              </div>
+            </div>
+
+          </div>
         </div>
       )}
 
@@ -351,9 +451,8 @@ export default function AdminGallery() {
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-colors ${
-                    selectedFile ? 'border-[#B17F59] bg-[#F0E8E1]/30' : 'border-slate-300 hover:border-[#B17F59] bg-slate-50'
-                  }`}
+                  className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-colors ${selectedFile ? 'border-[#B17F59] bg-[#F0E8E1]/30' : 'border-slate-300 hover:border-[#B17F59] bg-slate-50'
+                    }`}
                 >
                   <input
                     ref={fileInputRef}
