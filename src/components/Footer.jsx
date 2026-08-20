@@ -66,8 +66,8 @@ export default function Footer() {
 
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-[#D8A279] shrink-0" />
-                <a href="tel:+919099998828" className="hover:text-[#D8A279] transition-colors font-mono">
-                  (+91) 90999 98828
+                <a href="tel:+917574055155" className="hover:text-[#D8A279] transition-colors font-mono">
+                  (+91) 75740 55155
                 </a>
               </div>
 
@@ -182,7 +182,7 @@ export default function Footer() {
             {/* Direct Animated WhatsApp Button */}
             <div className="pt-3">
               <a
-                href="https://wa.me/919099998828?text=Hello%20CEPSA%20Bathware,%20I%20have%20an%20inquiry."
+                href="https://wa.me/917574055155?text=Hello%20CEPSA%20Bathware,%20I%20have%20an%20inquiry."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 px-5 py-3 bg-emerald-700 hover:bg-emerald-600 text-white rounded-2xl font-bold text-xs transition-all duration-300 border border-emerald-400/40 shadow-lg hover:shadow-[0_10px_25px_rgba(16,185,129,0.4)] transform hover:-translate-y-1 hover-shine cursor-pointer"

@@ -1,43 +1,47 @@
-import React, { createContext, useState, useEffect } from 'react';
-import api from '../services/api';
+import React, { createContext, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { loginAdmin, logout, verifyAdminAuth } from '../store/slices/authSlice';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem('cepsa_token') || null);
-  const [user, setUser] = useState(localStorage.getItem('cepsa_user') || null);
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { token, user, isAuthenticated, loading, error } = useSelector((state) => state.auth);
 
-  const login = async (username, password) => {
-    setLoading(true);
-    try {
-      const response = await api.post('/admin/login', { username, password });
-      const { access_token, username: uName } = response.data;
-      
-      setToken(access_token);
-      setUser(uName);
-      localStorage.setItem('cepsa_token', access_token);
-      localStorage.setItem('cepsa_user', uName);
-      setLoading(false);
+  useEffect(() => {
+    if (token) {
+      dispatch(verifyAdminAuth());
+    }
+  }, [dispatch, token]);
+
+  const handleLogin = async (username, password, security_pin) => {
+    const resultAction = await dispatch(loginAdmin({ username, password, security_pin }));
+    if (loginAdmin.fulfilled.match(resultAction)) {
       return { success: true };
-    } catch (error) {
-      setLoading(false);
-      return { 
-        success: false, 
-        message: error.response?.data?.detail || 'Invalid username or password' 
+    } else {
+      return {
+        success: false,
+        message: resultAction.payload || 'Invalid credentials or security PIN',
       };
     }
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('cepsa_token');
-    localStorage.removeItem('cepsa_user');
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, loading, isAuthenticated: !!token }}>
+    <AuthContext.Provider
+      value={{
+        token,
+        user,
+        loading,
+        error,
+        isAuthenticated: !!token && isAuthenticated,
+        login: handleLogin,
+        logout: handleLogout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

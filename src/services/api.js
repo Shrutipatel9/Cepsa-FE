@@ -10,16 +10,38 @@ const api = axios.create({
   },
 });
 
-// Interceptor to automatically add JWT auth token to requests
+import { store } from '../store';
+import { logout } from '../store/slices/authSlice';
+
+// Interceptor to automatically add JWT auth token from Redux store to requests
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('cepsa_token');
+    // Read active token directly from Redux Store (with localStorage fallback)
+    const state = store.getState();
+    const token = state.auth?.token || localStorage.getItem('cepsa_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Interceptor to handle 401 unauthorized errors via Redux store dispatch
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      const isLoginReq = error.config?.url?.includes('/admin/login');
+      if (!isLoginReq && error.config?.url?.includes('/admin')) {
+        store.dispatch(logout());
+        if (window.location.pathname.startsWith('/admin')) {
+          window.location.href = '/cepsa-owner-portal';
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
 );
 
 // Gallery API Endpoints

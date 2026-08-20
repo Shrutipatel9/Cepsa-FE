@@ -177,10 +177,10 @@ export default function Contact() {
                     <div className="space-y-1">
                       <h4 className="font-serif font-bold text-slate-950 text-sm">Direct Phone & WhatsApp</h4>
                       <p className="text-xs text-slate-600 font-medium">
-                        Mobile: <a href="tel:+919099998828" className="text-slate-900 font-bold hover:text-[#B17F59] transition-colors underline decoration-[#B17F59]/30 underline-offset-2">+91 90999 98828</a>
+                        Mobile: <a href="tel:+917574055155" className="text-slate-900 font-bold hover:text-[#B17F59] transition-colors underline decoration-[#B17F59]/30 underline-offset-2">+91 75740 55155</a>
                       </p>
                       <p className="text-xs text-slate-600 font-medium flex items-center gap-1.5 pt-0.5">
-                        WhatsApp: <a href="https://wa.me/919099998828?text=Hello%20CEPSA%20Bathware,%20I%20have%20an%20inquiry." target="_blank" rel="noopener noreferrer" className="text-emerald-700 font-bold hover:text-emerald-800 transition-colors flex items-center gap-1"><MessageCircle className="w-3.5 h-3.5 text-emerald-600" /> Chat on WhatsApp</a>
+                        WhatsApp: <a href="https://wa.me/917574055155?text=Hello%20CEPSA%20Bathware,%20I%20have%20an%20inquiry." target="_blank" rel="noopener noreferrer" className="text-emerald-700 font-bold hover:text-emerald-800 transition-colors flex items-center gap-1"><MessageCircle className="w-3.5 h-3.5 text-emerald-600" /> Chat on WhatsApp</a>
                       </p>
                     </div>
                   </div>
@@ -224,7 +224,7 @@ export default function Contact() {
                       <Facebook className="w-5 h-5" />
                     </a>
                     <a
-                      href="https://wa.me/919099998828?text=Hello%20CEPSA%20Bathware,%20I%20have%20an%20inquiry."
+                      href="https://wa.me/917574055155?text=Hello%20CEPSA%20Bathware,%20I%20have%20an%20inquiry."
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-3 bg-[#F0E8E1] text-[#B17F59] rounded-2xl hover:bg-emerald-600 hover:text-white transition-all transform hover:scale-110 shadow-xs"

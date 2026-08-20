@@ -57,7 +57,7 @@ function SecretKeyboardShortcutListener() {
 function ProtectedAdminRoute({ children }) {
   const { isAuthenticated } = useContext(AuthContext);
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/cepsa-owner-portal" replace />;
   }
   return children;
 }
