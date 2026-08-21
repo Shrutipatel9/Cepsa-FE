@@ -1,17 +1,24 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { LayoutDashboard, Layers, Inbox, LogOut, ExternalLink, ShieldCheck, Sparkles } from 'lucide-react';
 import Logo from './Logo';
 
 export default function AdminLayout({ children }) {
-  const { user, logout, isAuthenticated } = useContext(AuthContext);
+  const { user, logout, isAuthenticated, authChecked, token } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
+  if (!!token && !authChecked) {
+    return (
+      <div className="min-h-screen bg-[#F8F5F0] flex items-center justify-center">
+        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Loading admin...</div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
-    navigate('/admin/login');
-    return null;
+    return <Navigate to="/cepsa-owner-portal" replace />;
   }
 
   const navItems = [
@@ -76,7 +83,7 @@ export default function AdminLayout({ children }) {
           {/* Logout Button */}
           <button
             type="button"
-            onClick={() => { logout(); navigate('/admin/login'); }}
+            onClick={() => { logout(); navigate('/cepsa-owner-portal'); }}
             className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 hover:border-red-600 rounded-md text-xs font-extrabold uppercase tracking-wider transition-all duration-300 shadow-2xs hover:shadow-md cursor-pointer group"
           >
             <LogOut className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />

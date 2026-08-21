@@ -34,28 +34,43 @@ function ScrollToTop() {
   return null;
 }
 
-// Hidden Keyboard Shortcut (Ctrl+Shift+L) to Navigate to Admin Login
+// Hidden Keyboard Shortcut (Ctrl+Shift+L) — open admin dashboard if logged in, else login
 function SecretKeyboardShortcutListener() {
   const navigate = useNavigate();
+  const { isAuthenticated, authChecked, token } = useContext(AuthContext);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.ctrlKey && e.shiftKey && (e.key === 'L' || e.key === 'l')) {
         e.preventDefault();
-        navigate('/cepsa-owner-portal');
+        if (isAuthenticated || (!!token && !authChecked)) {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/cepsa-owner-portal');
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [navigate]);
+  }, [navigate, isAuthenticated, authChecked, token]);
 
   return null;
 }
 
 // Protected Route Guard for Admin Pages
 function ProtectedAdminRoute({ children }) {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, authChecked, token } = useContext(AuthContext);
+
+  // Token exists but session check still running — avoid bouncing to login
+  if (!!token && !authChecked) {
+    return (
+      <div className="min-h-screen bg-[#F8F5F0] flex items-center justify-center">
+        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Loading admin...</div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return <Navigate to="/cepsa-owner-portal" replace />;
   }

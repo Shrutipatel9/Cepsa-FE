@@ -32,10 +32,15 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      const isLoginReq = error.config?.url?.includes('/admin/login');
+      const isLoginReq =
+        error.config?.url?.includes('/admin/login') ||
+        error.config?.url?.includes('/admin/verify-credentials');
       if (!isLoginReq && error.config?.url?.includes('/admin')) {
         store.dispatch(logout());
-        if (window.location.pathname.startsWith('/admin')) {
+        if (
+          window.location.pathname.startsWith('/admin') ||
+          window.location.pathname === '/cepsa-owner-portal'
+        ) {
           window.location.href = '/cepsa-owner-portal';
         }
       }

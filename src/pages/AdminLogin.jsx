@@ -1,30 +1,45 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Lock, User, KeyRound, ArrowLeft, Loader2 } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useToast } from '../context/ToastContext';
-
 import api from '../services/api';
 
 export default function AdminLogin() {
   const showDemoCredentials = import.meta.env.VITE_SHOW_DEMO_CREDENTIALS === 'true';
 
-  const [step, setStep] = useState(1); // 1 = Username & Password, 2 = Security PIN
+  const [step, setStep] = useState(1);
   const [username, setUsername] = useState(showDemoCredentials ? 'cepsaAdminKS' : '');
   const [password, setPassword] = useState(showDemoCredentials ? 'Cepsa@Master#2026!Secure' : '');
   const [securityPin, setSecurityPin] = useState(showDemoCredentials ? '202688' : '');
   const [verifyingStep1, setVerifyingStep1] = useState(false);
 
-  const { login, loading, isAuthenticated } = useContext(AuthContext);
+  const { login, loading, isAuthenticated, authChecked, token } = useContext(AuthContext);
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
 
-  if (isAuthenticated) {
-    navigate('/admin/dashboard');
+  const checkingSession = !!token && !authChecked;
+
+  useEffect(() => {
+    if (authChecked && isAuthenticated) {
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [authChecked, isAuthenticated, navigate]);
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen bg-[#F8F5F0] flex flex-col justify-center items-center px-4">
+        <Loader2 className="w-8 h-8 text-[#B17F59] animate-spin mb-3" />
+        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Checking session...</p>
+      </div>
+    );
   }
 
-  // STEP 1 HANDLER: Click "Sign In"
+  if (isAuthenticated) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
   const handleStep1Submit = async (e) => {
     e.preventDefault();
 
@@ -35,9 +50,7 @@ export default function AdminLogin() {
 
     setVerifyingStep1(true);
     try {
-      // Validate Level 1 Username and Password with backend API
       await api.post('/admin/verify-credentials', { username, password });
-      // ONLY transition to Step 2 if credentials are valid!
       setStep(2);
     } catch (err) {
       const msg = err.response?.data?.detail || 'Invalid username or password.';
@@ -47,7 +60,6 @@ export default function AdminLogin() {
     }
   };
 
-  // STEP 2 HANDLER: Click "Verify"
   const handleStep2Submit = async (e) => {
     e.preventDefault();
 
@@ -59,7 +71,7 @@ export default function AdminLogin() {
     const result = await login(username, password, securityPin);
     if (result.success) {
       showSuccess('Security Verified! Welcome to Admin Portal.');
-      navigate('/admin/dashboard');
+      navigate('/admin/dashboard', { replace: true });
     } else {
       showError(result.message || 'Verification failed. Please check your credentials and PIN.');
     }
@@ -67,14 +79,11 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-[#F8F5F0] flex flex-col justify-center items-center px-4 relative py-12">
-
       <Link to="/" className="absolute top-6 left-6 text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1.5 transition-colors">
         <ArrowLeft className="w-4 h-4 text-[#B17F59]" /> Return to CEPSA Website
       </Link>
 
       <div className="w-full max-w-md bg-white border border-[#E5D7CD] rounded-3xl p-8 shadow-xl space-y-6">
-
-        {/* HEADLINE (ONLY ADMIN PORTAL, NO TAG, NO OWNER) */}
         <div className="text-center space-y-2">
           <Link to="/" className="inline-block mb-1">
             <Logo className="h-12 mx-auto" />
@@ -85,7 +94,6 @@ export default function AdminLogin() {
           </p>
         </div>
 
-        {/* STEP 1: USERNAME & PASSWORD FORM */}
         {step === 1 && (
           <form onSubmit={handleStep1Submit} className="space-y-4 text-xs animate-fadeIn">
             <div>
@@ -118,7 +126,6 @@ export default function AdminLogin() {
               </div>
             </div>
 
-            {/* Display Default Demo Credentials in Local Environment Only */}
             {showDemoCredentials && (
               <div className="p-3 bg-[#F0E8E1] border border-[#E5D7CD] rounded-xl text-[11px] text-[#B17F59] font-medium space-y-0.5 animate-fadeIn">
                 <div>Username: <strong className="text-slate-900 font-mono">cepsaAdminKS</strong></div>
@@ -137,7 +144,6 @@ export default function AdminLogin() {
           </form>
         )}
 
-        {/* STEP 2: SECURITY PIN FORM */}
         {step === 2 && (
           <form onSubmit={handleStep2Submit} className="space-y-4 text-xs animate-fadeIn">
             <div>
@@ -157,7 +163,6 @@ export default function AdminLogin() {
               </div>
             </div>
 
-            {/* Display Default Demo PIN in Local Environment Only */}
             {showDemoCredentials && (
               <div className="p-3 bg-[#F0E8E1] border border-[#E5D7CD] rounded-xl text-[11px] text-[#B17F59] font-medium animate-fadeIn">
                 Default Security PIN: <strong className="text-slate-900 font-mono">202688</strong>
@@ -174,7 +179,6 @@ export default function AdminLogin() {
             </button>
           </form>
         )}
-
       </div>
     </div>
   );
