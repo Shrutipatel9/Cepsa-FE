@@ -118,6 +118,20 @@ export default function Catalog({ onOpenInquiry }) {
     return prods;
   }, [products, productSearch]);
 
+  // Calculate maximum specs count across filtered products in selected category
+  const maxSpecsCount = useMemo(() => {
+    if (!filteredProducts || filteredProducts.length === 0) return 0;
+    let maxCount = 0;
+    for (const p of filteredProducts) {
+      const specList = Array.isArray(p.specifications) && p.specifications.length > 0
+        ? p.specifications
+        : (p.description ? [p.description] : []);
+      const count = Math.min(3, specList.length);
+      if (count > maxCount) maxCount = count;
+    }
+    return maxCount;
+  }, [filteredProducts]);
+
   return (
     <div className="bg-[#F8F5F0] text-slate-900 selection:bg-[#B17F59] selection:text-white pb-24">
 
@@ -386,7 +400,7 @@ export default function Catalog({ onOpenInquiry }) {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch pt-2">
                 {filteredProducts.map((product, idx) => (
                   <ScrollReveal key={product.id} variant="fade-up" delay={100 * ((idx % 6) + 1)}>
-                    <ProductCard product={product} onInquire={onOpenInquiry} />
+                    <ProductCard product={product} onInquire={onOpenInquiry} maxSpecsCount={maxSpecsCount} />
                   </ScrollReveal>
                 ))}
               </div>

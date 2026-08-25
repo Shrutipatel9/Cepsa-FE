@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, CheckCircle2, ChevronDown, X, Info } from 'lucide-react';
 
-export default function ProductCard({ product, onInquire }) {
+export default function ProductCard({ product, onInquire, maxSpecsCount }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const tooltipRef = useRef(null);
   const buttonRef = useRef(null);
@@ -19,6 +19,11 @@ export default function ProductCard({ product, onInquire }) {
   const visibleSpecs = specList.slice(0, 3);
   const remainingSpecs = specList.slice(3);
   const hasMore = remainingSpecs.length > 0;
+
+  // Compute maximum specs count for card height alignment in current category group
+  const targetCount = maxSpecsCount !== undefined
+    ? maxSpecsCount
+    : Math.min(3, visibleSpecs.length);
 
   // Close tooltip on click outside
   useEffect(() => {
@@ -43,7 +48,7 @@ export default function ProductCard({ product, onInquire }) {
 
   return (
     <div className="group relative bg-white border border-[#E5D7CD] hover:border-[#B17F59] rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-md hover:shadow-2xl flex flex-col justify-between hover-shine transform-gpu h-full">
-      
+
       {/* 1. PRODUCT MEDIA IMAGE (STRICT 4x4 SQUARE SHAPE ASPECT RATIO - 100% FLUSH FILL) */}
       <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-[#1C1613] border-b border-[#E5D7CD]">
         <img
@@ -58,18 +63,31 @@ export default function ProductCard({ product, onInquire }) {
 
       {/* 2. PRODUCT DETAILS */}
       <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4 bg-white relative">
-        
+
         <div className="space-y-3">
-          
-          {/* Title / Name First */}
+
+          {/* Title / Name First (sm:text-xl) */}
           <div>
-            <h3 className="font-serif font-extrabold text-xl sm:text-2xl text-[#8E5832] group-hover:text-[#B17F59] transition-colors tracking-tight">
+            <h3 className="font-serif font-extrabold text-lg sm:text-xl text-[#8E5832] group-hover:text-[#B17F59] transition-colors tracking-tight">
               {product.title || product.product_code}
             </h3>
           </div>
 
-          {/* Specifications List Below Title (3 Points + View More Tooltip) */}
-          <div className="space-y-1.5 pt-2 border-t border-[#E5D7CD]/60 min-h-[95px] relative">
+          {/* Specifications List Below Title (Dynamic height per category/group) */}
+          <div
+            className={`space-y-1.5 border-t border-[#E5D7CD]/60 relative transition-all duration-300 ${targetCount > 0 ? 'pt-2' : ''
+              }`}
+            style={{
+              minHeight:
+                targetCount === 0
+                  ? '0px'
+                  : targetCount === 1
+                    ? '28px'
+                    : targetCount === 2
+                      ? '56px'
+                      : '84px',
+            }}
+          >
             {visibleSpecs.length > 0 ? (
               <>
                 {visibleSpecs.map((spec, idx) => (
