@@ -9,8 +9,8 @@ import eCatalogueHeaderImg from '../assets/header_images/e-catelogue.png';
 export default function ECatalogue({ onOpenInquiry }) {
   const [isBookHovered, setIsBookHovered] = useState(false);
 
-  // Replace with exact Google Drive PDF URL when ready
-  const drivePdfLink = "https://drive.google.com";
+  // Google Drive PDF URL for the catalogue, configured via VITE_E_CATALOGUE_URL
+  const drivePdfLink = import.meta.env.VITE_E_CATALOGUE_URL || '';
 
   return (
     <div className="bg-[#F8F5F0] text-slate-900 selection:bg-[#B17F59] selection:text-white pb-20">
