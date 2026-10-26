@@ -4,7 +4,7 @@ import ScrollReveal from '../components/ScrollReveal';
 import { getPublicGallery } from '../services/api';
 
 // Import Assets
-import galleryHeaderImg from '../assets/header_images/gallery.png';
+import galleryHeaderImg from '../assets/header_images/gallery.webp';
 
 function GalleryItem({ item }) {
   const videoRef = useRef(null);
@@ -107,6 +107,8 @@ function GalleryItem({ item }) {
         ) : (
           <div className="relative w-full h-full overflow-hidden">
             <img
+              loading="lazy"
+              decoding="async"
               src={mediaUrl}
               alt={item.title || "CEPSA Gallery Showcase"}
               className="w-full h-full object-cover scale-[1.02] transition-transform duration-500 group-hover:scale-105"
@@ -158,6 +160,8 @@ export default function Gallery() {
       <section className="relative w-full h-48 sm:h-56 bg-[#2B1D14] overflow-hidden border-b border-[#E5D7CD] mb-14">
         {/* Background Gallery Header Image */}
         <img
+          fetchpriority="high"
+          decoding="async"
           src={galleryHeaderImg}
           alt="CEPSA Gallery"
           className="w-full h-full object-cover opacity-65 filter brightness-95 transform scale-105"

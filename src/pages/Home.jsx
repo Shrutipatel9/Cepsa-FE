@@ -5,13 +5,13 @@ import ScrollReveal from '../components/ScrollReveal';
 import HeroScene from '../components/HeroScene';
 
 // Import 4 Choose Us Assets
-import chooseUsImg1 from '../assets/choose_us/choose_us_photo_1.png';
-import chooseUsImg2 from '../assets/choose_us/choose_us_photo_2.png';
-import chooseUsImg3 from '../assets/choose_us/choose_us_photo_3.png';
-import chooseUsImg4 from '../assets/choose_us/choose_us_photo_4.png';
+import chooseUsImg1 from '../assets/choose_us/choose_us_photo_1.webp';
+import chooseUsImg2 from '../assets/choose_us/choose_us_photo_2.webp';
+import chooseUsImg3 from '../assets/choose_us/choose_us_photo_3.webp';
+import chooseUsImg4 from '../assets/choose_us/choose_us_photo_4.webp';
 
 // Import About Us Story Image
-import aboutUsImg from '../assets/about_us_image.png';
+import aboutUsImg from '../assets/about_us_image.webp';
 
 
 export default function Home({ onOpenInquiry }) {
@@ -213,6 +213,8 @@ export default function Home({ onOpenInquiry }) {
                   {/* Showcase Image Container (Fixed Size Container) */}
                   <div className="relative rounded-2xl overflow-hidden shadow-xl border border-[#E5D7CD] w-full h-[400px] sm:h-[460px] ml-0 lg:ml-6 group bg-slate-100 flex items-center justify-center">
                     <img
+                      loading="lazy"
+                      decoding="async"
                       key={activeFeature.id}
                       src={activeFeature.image}
                       alt={activeFeature.title}
@@ -227,6 +229,8 @@ export default function Home({ onOpenInquiry }) {
                     {/* Official CEPSA Logo Header */}
                     <div className="pb-2 mb-2.5 flex items-center justify-between border-b border-slate-100">
                       <img
+                        loading="lazy"
+                        decoding="async"
                         src="/cepsa-logo.png"
                         alt="CEPSA"
                         className="h-6 sm:h-7 object-contain"
@@ -279,6 +283,8 @@ export default function Home({ onOpenInquiry }) {
                   {/* Image Frame Container */}
                   <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E5D7CD] group hover-shine bg-slate-100 aspect-4/3 sm:aspect-16/11">
                     <img
+                      loading="lazy"
+                      decoding="async"
                       src={aboutUsImg}
                       alt="CEPSA Story and Vision"
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 filter brightness-95"

@@ -38,6 +38,8 @@ export default function Footer() {
           <div className="space-y-3 max-w-2xl">
             <Link to="/" onClick={scrollToTop} className="inline-block">
               <img
+                loading="lazy"
+                decoding="async"
                 src="/cepsa-logo.png"
                 alt="CEPSA Logo"
                 className="h-10 sm:h-12 w-auto object-contain filter brightness-0 invert drop-shadow-md"

@@ -3,9 +3,9 @@ import { Target, Eye, Diamond, Plus, Minus, ShieldCheck, Sparkles, Award, CheckC
 import ScrollReveal from '../components/ScrollReveal';
 
 // Import Assets
-import companyProfileImg from '../assets/company_profile.png';
-import companyProfileImg2 from '../assets/company_profile_2.png';
-import aboutUsHeaderImg from '../assets/header_images/about_us.png';
+import companyProfileImg from '../assets/company_profile.webp';
+import companyProfileImg2 from '../assets/company_profile_2.webp';
+import aboutUsHeaderImg from '../assets/header_images/about_us.webp';
 
 // Custom Line-Art SVG Icons matching reference image
 const RibbonMedalIcon = ({ className = "w-10 h-10" }) => (
@@ -66,6 +66,8 @@ export default function About() {
 
         {/* Background Craftsmanship Image */}
         <img
+          fetchpriority="high"
+          decoding="async"
           src={aboutUsHeaderImg}
           alt="About CEPSA"
           className="w-full h-full object-cover opacity-65 filter brightness-95 transform scale-105"
@@ -105,6 +107,8 @@ export default function About() {
             <ScrollReveal variant="fade-right" delay={150}>
               <div className="relative w-full rounded-3xl overflow-hidden shadow-xl border border-[#E5D7CD] aspect-4/3 max-h-[340px] max-w-md mx-auto group hover-shine bg-white">
                 <img
+                  loading="lazy"
+                  decoding="async"
                   src={companyProfileImg}
                   alt="CEPSA Company Profile Showcase"
                   className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105 filter brightness-95"
@@ -263,6 +267,8 @@ export default function About() {
               <ScrollReveal variant="fade-left" delay={200}>
                 <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E5D7CD] aspect-4/3 max-h-[340px] max-w-md mx-auto group hover-shine bg-white">
                   <img
+                    loading="lazy"
+                    decoding="async"
                     src={companyProfileImg2}
                     alt="Why Choose CEPSA Sanitaryware"
                     className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105 filter brightness-95"

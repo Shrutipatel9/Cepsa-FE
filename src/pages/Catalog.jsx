@@ -7,7 +7,7 @@ import ProductCard from '../components/ProductCard';
 import Skeleton, { CategoryGridSkeleton, ProductGridSkeleton } from '../components/Skeleton';
 
 // Import Header Assets
-import productsHeaderImg from '../assets/header_images/products.png';
+import productsHeaderImg from '../assets/header_images/products.webp';
 
 export default function Catalog({ onOpenInquiry }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -140,6 +140,8 @@ export default function Catalog({ onOpenInquiry }) {
 
         {/* Background Craftsmanship Image */}
         <img
+          fetchpriority="high"
+          decoding="async"
           src={productsHeaderImg}
           alt="CEPSA Products"
           className="w-full h-full object-cover opacity-65 filter brightness-95 transform scale-105"
@@ -251,6 +253,8 @@ export default function Catalog({ onOpenInquiry }) {
                       {/* Category Cover Image Container (4x4 Square Shape - 100% Flush Fill) */}
                       <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-[#1C1613] border-b border-[#E5D7CD]">
                         <img
+                          loading="lazy"
+                          decoding="async"
                           src={cat.image_url || 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80'}
                           alt={cat.name}
                           className="w-full h-full object-cover object-center scale-[1.02] transition-transform duration-700 ease-out group-hover:scale-110 filter brightness-95"

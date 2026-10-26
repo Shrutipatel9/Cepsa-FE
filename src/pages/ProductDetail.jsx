@@ -60,6 +60,8 @@ export default function ProductDetail({ onOpenInquiry }) {
         <div className="space-y-4">
           <div className="relative aspect-4/3 w-full bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xl group">
             <img
+              fetchpriority="high"
+              decoding="async"
               src={selectedImage}
               alt={product.title}
               className="w-full h-full object-cover transition-all duration-500"
@@ -81,7 +83,7 @@ export default function ProductDetail({ onOpenInquiry }) {
                   className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${selectedImage === img.image_url ? 'border-cepsa-gold scale-105 shadow-md' : 'border-slate-200 opacity-70 hover:opacity-100'
                     }`}
                 >
-                  <img src={img.image_url} alt="" className="w-full h-full object-cover" />
+                  <img src={img.image_url} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

@@ -8,7 +8,7 @@ import LocationInput from '../components/LocationInput';
 import { lookupCountryCode } from '../utils/countryCodes';
 
 // Import Header Assets
-import contactUsHeaderImg from '../assets/header_images/coontact_us.png';
+import contactUsHeaderImg from '../assets/header_images/coontact_us.webp';
 
 // Detect browser default country code based on timezone
 const getDefaultCountryCode = () => {
@@ -106,6 +106,8 @@ export default function Contact() {
 
         {/* Background Craftsmanship Image */}
         <img
+          fetchpriority="high"
+          decoding="async"
           src={contactUsHeaderImg}
           alt="CEPSA Contact Us"
           className="w-full h-full object-cover opacity-65 filter brightness-95 transform scale-105"

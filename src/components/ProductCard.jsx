@@ -52,6 +52,8 @@ export default function ProductCard({ product, onInquire, maxSpecsCount }) {
       {/* 1. PRODUCT MEDIA IMAGE (STRICT 4x4 SQUARE SHAPE ASPECT RATIO - 100% FLUSH FILL) */}
       <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-[#1C1613] border-b border-[#E5D7CD]">
         <img
+          loading="lazy"
+          decoding="async"
           src={primaryImage}
           alt={product.title}
           className="w-full h-full object-cover object-center scale-[1.02] transition-transform duration-700 ease-out group-hover:scale-108 filter brightness-95"

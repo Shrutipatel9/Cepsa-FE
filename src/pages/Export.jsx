@@ -3,8 +3,8 @@ import { Globe, PackageCheck, Anchor, ShieldCheck, ArrowRight, CheckCircle2 } fr
 import ScrollReveal from '../components/ScrollReveal';
 
 // Import Assets
-import exportHeaderImg from '../assets/header_images/export.png';
-import exportImg from '../assets/export.png';
+import exportHeaderImg from '../assets/header_images/export.webp';
+import exportImg from '../assets/export.webp';
 
 export default function Export() {
   const regions = [
@@ -21,6 +21,8 @@ export default function Export() {
 
         {/* Cargo Port Shipping Background Image */}
         <img
+          fetchpriority="high"
+          decoding="async"
           src={exportHeaderImg}
           alt="CEPSA Global Export"
           className="w-full h-full object-cover opacity-65 filter brightness-95"
@@ -64,6 +66,8 @@ export default function Export() {
             <ScrollReveal variant="fade-right" delay={200}>
               <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E5D7CD] group hover-shine bg-[#F0E8E1] aspect-4/3 max-h-[340px] max-w-md mx-auto">
                 <img
+                  loading="lazy"
+                  decoding="async"
                   src={exportImg}
                   alt="CEPSA Global Export Shipping"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 filter brightness-95"
